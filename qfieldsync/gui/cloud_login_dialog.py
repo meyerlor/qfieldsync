@@ -163,7 +163,7 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
         self.rejected.connect(self.on_rejected)
         self.hide()
 
-        self._sso_login_buttons: List[QWidget] = []
+        self._sso_login_buttons: List[QPushButton] = []
 
         self.ssoCancelLoginButton.setIcon(
             self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).icon()
@@ -195,7 +195,7 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
 
     def clear_login_widgets(self) -> None:
         self.set_login_groupbox_visibility(self.signInUsernameGroupBox, False)
-        self.orDivider.setVisible(False)
+        self.authenticationDivider.setVisible(False)
 
         for button in self._sso_login_buttons:
             button.deleteLater()
@@ -254,9 +254,9 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
             # Mirror the web login page: show an "Or" divider between the credentials
             # form and the SSO provider buttons only when both are present.
             if has_credentials and not self._sso_login_buttons:
-                self.orDivider.setVisible(True)
+                self.authenticationDivider.setVisible(True)
 
-            login_button = QPushButton(self.tr(auth_method["name"]))
+            login_button = QPushButton(auth_method["name"])
             login_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
             self.set_sso_provider_button_style(auth_method.get("styles"), login_button)

@@ -145,11 +145,11 @@
        </widget>
       </item>
       <item row="4" column="0" colspan="2">
-       <widget class="QWidget" name="orDivider" native="true">
+       <widget class="QWidget" name="authenticationDivider" native="true">
         <property name="visible">
          <bool>false</bool>
         </property>
-        <layout class="QHBoxLayout" name="orDividerLayout">
+        <layout class="QHBoxLayout" name="authenticationDividerLayout">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -166,7 +166,7 @@
           <number>8</number>
          </property>
          <item>
-          <widget class="QFrame" name="orDividerLeftLine">
+          <widget class="QFrame" name="authenticationDividerLeftLine">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -182,7 +182,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="orDividerLabel">
+          <widget class="QLabel" name="authenticationDividerLabel">
            <property name="text">
             <string>Or</string>
            </property>
@@ -192,7 +192,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="orDividerRightLine">
+          <widget class="QFrame" name="authenticationDividerRightLine">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
