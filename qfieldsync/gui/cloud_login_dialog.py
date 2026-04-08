@@ -197,8 +197,8 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
         self.set_login_groupbox_visibility(self.signInUsernameGroupBox, False)
         self.authenticationDivider.setVisible(False)
 
-        for button in self._sso_login_buttons:
-            button.deleteLater()
+        for push_button in self._sso_login_buttons:
+            push_button.deleteLater()
 
         self._sso_login_buttons = []
 
