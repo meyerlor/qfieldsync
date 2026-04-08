@@ -33,13 +33,9 @@ from qgis.PyQt.QtWidgets import (
     QApplication,
     QDialog,
     QDialogButtonBox,
-    QFrame,
     QGroupBox,
-    QHBoxLayout,
-    QLabel,
     QMainWindow,
     QPushButton,
-    QSizePolicy,
     QWidget,
 )
 from qgis.PyQt.uic import loadUiType
@@ -199,10 +195,10 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
 
     def clear_login_widgets(self) -> None:
         self.set_login_groupbox_visibility(self.signInUsernameGroupBox, False)
+        self.orDivider.setVisible(False)
 
-        # clear sso login buttons
-        for push_button in self._sso_login_buttons:
-            push_button.deleteLater()
+        for button in self._sso_login_buttons:
+            button.deleteLater()
 
         self._sso_login_buttons = []
 
@@ -258,38 +254,9 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
             # Mirror the web login page: show an "Or" divider between the credentials
             # form and the SSO provider buttons only when both are present.
             if has_credentials and not self._sso_login_buttons:
-                divider = QWidget()
-                divider_layout = QHBoxLayout(divider)
-                divider_layout.setContentsMargins(0, 4, 0, 4)
-                divider_layout.setSpacing(8)
+                self.orDivider.setVisible(True)
 
-                left_line = QFrame()
-                left_line.setFrameShape(QFrame.Shape.HLine)
-                left_line.setFrameShadow(QFrame.Shadow.Sunken)
-                left_line.setSizePolicy(
-                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
-                )
-
-                or_label = QLabel(self.tr("Or"))
-                or_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-                right_line = QFrame()
-                right_line.setFrameShape(QFrame.Shape.HLine)
-                right_line.setFrameShadow(QFrame.Shadow.Sunken)
-                right_line.setSizePolicy(
-                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
-                )
-
-                divider_layout.addWidget(left_line)
-                divider_layout.addWidget(or_label)
-                divider_layout.addWidget(right_line)
-
-                self.signInUsernameGroupBox.layout().addRow(divider)
-                self._sso_login_buttons.append(divider)
-
-            login_button = QPushButton(
-                self.tr(provider).format(provider=auth_method["name"])
-            )
+            login_button = QPushButton(self.tr(auth_method["name"]))
             login_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
             self.set_sso_provider_button_style(auth_method.get("styles"), login_button)
