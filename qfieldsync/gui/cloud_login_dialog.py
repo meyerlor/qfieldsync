@@ -288,7 +288,7 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
                 self._sso_login_buttons.append(divider)
 
             login_button = QPushButton(
-                self.tr("{provider}").format(provider=auth_method["name"])
+                self.tr(provider).format(provider=auth_method["name"])
             )
             login_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
