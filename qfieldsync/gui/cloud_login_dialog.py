@@ -33,11 +33,13 @@ from qgis.PyQt.QtWidgets import (
     QApplication,
     QDialog,
     QDialogButtonBox,
+    QFrame,
     QGroupBox,
+    QHBoxLayout,
+    QLabel,
     QMainWindow,
     QPushButton,
     QSizePolicy,
-    QSpacerItem,
     QWidget,
 )
 from qgis.PyQt.uic import loadUiType
@@ -165,7 +167,7 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
         self.rejected.connect(self.on_rejected)
         self.hide()
 
-        self._sso_login_buttons: List[QPushButton] = []
+        self._sso_login_buttons: List[QWidget] = []
 
         self.ssoCancelLoginButton.setIcon(
             self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).icon()
@@ -245,21 +247,48 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
 
         self.clear_login_widgets()
 
-        # add vertical space before SSO login buttons
-        vertical_spacer = QSpacerItem(
-            0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
-        )
-        self.signInUsernameGroupBox.layout().addItem(vertical_spacer)
+        has_credentials = False
 
         for auth_method in auth_methods:
-            # credentials login: enabled static groupbox.
             if auth_method["id"] == "credentials":
                 self.set_login_groupbox_visibility(self.signInUsernameGroupBox, True)
+                has_credentials = True
                 continue
 
-            # sso provider: dynamically generate button to login.
+            # Mirror the web login page: show an "Or" divider between the credentials
+            # form and the SSO provider buttons only when both are present.
+            if has_credentials and not self._sso_login_buttons:
+                divider = QWidget()
+                divider_layout = QHBoxLayout(divider)
+                divider_layout.setContentsMargins(0, 4, 0, 4)
+                divider_layout.setSpacing(8)
+
+                left_line = QFrame()
+                left_line.setFrameShape(QFrame.Shape.HLine)
+                left_line.setFrameShadow(QFrame.Shadow.Sunken)
+                left_line.setSizePolicy(
+                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
+                )
+
+                or_label = QLabel(self.tr("Or"))
+                or_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+                right_line = QFrame()
+                right_line.setFrameShape(QFrame.Shape.HLine)
+                right_line.setFrameShadow(QFrame.Shadow.Sunken)
+                right_line.setSizePolicy(
+                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
+                )
+
+                divider_layout.addWidget(left_line)
+                divider_layout.addWidget(or_label)
+                divider_layout.addWidget(right_line)
+
+                self.signInUsernameGroupBox.layout().addRow(divider)
+                self._sso_login_buttons.append(divider)
+
             login_button = QPushButton(
-                self.tr("Sign In with {provider}").format(provider=auth_method["name"])
+                self.tr("{provider}").format(provider=auth_method["name"])
             )
             login_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
@@ -268,7 +297,7 @@ class CloudLoginDialog(QDialog, CloudLoginDialogUi):
             login_button.clicked.connect(
                 partial(self.on_login_with_sso_provider_button_clicked, auth_method)
             )
-            self.signInUsernameGroupBox.layout().addWidget(login_button)
+            self.signInUsernameGroupBox.layout().addRow(login_button)
             self._sso_login_buttons.append(login_button)
 
     def set_sso_provider_button_style(
